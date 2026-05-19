@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "qa": "projects.rag_qa_api.graph:build_graph_definition"
+  },
+  "env": "../../.env"
+}

@@ -1,0 +1,39 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Virtual envs / package managers ---
+.venv/
+venv/
+env/
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Lesson artifacts ---
+data/chroma_db/
+data/checkpoints.db
+data/*.sqlite
+data/*.sqlite-journal
+
+# --- Capstone artifacts ---
+projects/**/chroma_db/
+projects/**/*.db
+projects/**/postgres_data/
+
+# --- Distribution ---
+build/
+dist/
+*.whl

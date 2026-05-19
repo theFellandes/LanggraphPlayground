@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: langgraph
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d langgraph"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ../..             # build from repo root so it can COPY shared/, data/
+      dockerfile: projects/rag_qa_api/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ../../.env               # ANTHROPIC_API_KEY / OPENAI_API_KEY / LLM_PROVIDER
+    environment:
+      POSTGRES_URL: postgresql://postgres:postgres@postgres:5432/langgraph
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:

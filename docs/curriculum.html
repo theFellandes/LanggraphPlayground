@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangGraph Playground — Zero-to-Hero Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0e14; --bg2:#111820; --bg3:#182030;
+  --surface:#1a2332; --border:#263040;
+  --text:#dce5f0; --text-dim:#7a8a9e; --text-bright:#f0f4f8;
+  --blue:#4dacff; --green:#44d488; --orange:#f0a040; --red:#ff5c5c;
+  --purple:#b48cff; --pink:#ff6eb4; --cyan:#40d8d0; --yellow:#ffe066;
+  --gold:#c8a84e;
+  --radius:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Lora',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+::selection{background:var(--blue);color:var(--bg)}
+a{color:var(--blue);text-decoration:none;border-bottom:1px dashed transparent;transition:.2s}
+a:hover{border-bottom-color:var(--blue)}
+code{font-family:'IBM Plex Mono',monospace;font-size:.88em;background:var(--bg3);color:var(--cyan);padding:1px 6px;border-radius:4px;border:1px solid var(--border)}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:100;background:rgba(10,14,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.topnav a{color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;padding:5px 10px;border-radius:5px;letter-spacing:.4px;text-transform:uppercase;border-bottom:none}
+.topnav a:hover{color:var(--blue);background:rgba(77,172,255,.08);border-bottom:none}
+
+/* HERO */
+.hero{text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 180deg at 50% 50%,rgba(77,172,255,.06) 0deg,rgba(180,140,255,.04) 120deg,rgba(255,110,180,.03) 240deg,rgba(77,172,255,.06) 360deg);animation:spin 40s linear infinite;z-index:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.6rem);font-weight:900;position:relative;color:var(--text-bright);line-height:1.1;z-index:1}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--blue),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{color:var(--text-dim);font-size:1.05rem;margin-top:18px;position:relative;font-family:'IBM Plex Mono',monospace;font-weight:400;letter-spacing:.5px;z-index:1}
+.hero .build-end{margin:30px auto 0;max-width:680px;padding:18px 24px;background:rgba(77,172,255,.05);border:1px solid var(--border);border-radius:var(--radius);font-size:.95rem;color:var(--text);position:relative;z-index:1}
+.hero .build-end strong{color:var(--cyan);font-family:'IBM Plex Mono',monospace;font-size:.85em;text-transform:uppercase;letter-spacing:1px}
+
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+
+/* SECTIONS */
+.sec{margin:60px 0;padding-top:30px}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:30px;border-bottom:2px solid var(--border);padding-bottom:16px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;padding:5px 12px;border-radius:6px;letter-spacing:1.5px;background:var(--bg3);border:1px solid var(--border)}
+.sec-num.s-blue{color:var(--blue);border-color:rgba(77,172,255,.4)}
+.sec-num.s-green{color:var(--green);border-color:rgba(68,212,136,.4)}
+.sec-num.s-purple{color:var(--purple);border-color:rgba(180,140,255,.4)}
+.sec-num.s-orange{color:var(--orange);border-color:rgba(240,160,64,.4)}
+.sec-num.s-pink{color:var(--pink);border-color:rgba(255,110,180,.4)}
+.sec-num.s-cyan{color:var(--cyan);border-color:rgba(64,216,208,.4)}
+.sec-title{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--text-bright)}
+.sec-intro{color:var(--text-dim);font-size:1rem;margin-bottom:24px;max-width:780px}
+
+/* QUICK START */
+.quickstart{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin:30px 0}
+.quickstart h3{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--cyan);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:18px}
+.quickstart pre{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text-bright);overflow-x:auto;margin:8px 0}
+.quickstart pre .cmt{color:var(--text-dim)}
+.quickstart pre .cmd{color:var(--green)}
+
+/* STACK TABLE */
+.stack-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:20px 0}
+.stack-table th{background:var(--bg3);color:var(--blue);font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.8px;text-align:left;padding:12px 16px;border-bottom:2px solid var(--border)}
+.stack-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.95rem}
+.stack-table tr:last-child td{border-bottom:none}
+.stack-table tr:hover td{background:rgba(77,172,255,.03)}
+.stack-table .pkg{font-family:'IBM Plex Mono',monospace;color:var(--cyan)}
+.stack-table .ver{font-family:'IBM Plex Mono',monospace;color:var(--orange);font-size:.85em}
+
+/* LESSON GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;margin:20px 0}
+.lesson-card{background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:var(--radius);padding:22px;transition:.2s}
+.lesson-card:hover{transform:translateY(-2px);border-color:var(--blue)}
+.lesson-card .num{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:var(--blue);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.lesson-card h3{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:700;color:var(--text-bright);margin-bottom:12px;line-height:1.3}
+.lesson-card .learn{color:var(--text);font-size:.92rem;line-height:1.6;margin-bottom:14px}
+.lesson-card .apis{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.lesson-card .api{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--cyan);background:var(--bg3);padding:3px 8px;border-radius:4px;border:1px solid var(--border)}
+.lesson-card a{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);display:inline-block;margin-top:12px;text-transform:uppercase;letter-spacing:.8px;border-bottom:none}
+.lesson-card a:hover{color:var(--blue)}
+
+/* tier color overrides */
+.tier-1 .lesson-card{border-left-color:var(--blue)}
+.tier-1 .lesson-card .num{color:var(--blue)}
+.tier-1 .lesson-card:hover{border-color:var(--blue)}
+.tier-2 .lesson-card{border-left-color:var(--green)}
+.tier-2 .lesson-card .num{color:var(--green)}
+.tier-2 .lesson-card:hover{border-color:var(--green)}
+.tier-3 .lesson-card{border-left-color:var(--purple)}
+.tier-3 .lesson-card .num{color:var(--purple)}
+.tier-3 .lesson-card:hover{border-color:var(--purple)}
+.tier-4 .lesson-card{border-left-color:var(--orange)}
+.tier-4 .lesson-card .num{color:var(--orange)}
+.tier-4 .lesson-card:hover{border-color:var(--orange)}
+
+/* HIGHLIGHT card (e.g. debugging, create_agent, middleware) */
+.lesson-card.highlight{position:relative}
+.lesson-card.highlight::after{content:'★ KEY';position:absolute;top:14px;right:14px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--yellow);background:rgba(255,224,102,.1);padding:3px 7px;border-radius:4px;border:1px solid rgba(255,224,102,.3)}
+
+/* CAPSTONE */
+.capstone-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:30px;margin-bottom:24px;border-top:5px solid var(--pink)}
+.capstone-card h3{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--text-bright);margin-bottom:14px}
+.capstone-card .tagline{color:var(--text-dim);font-style:italic;margin-bottom:18px}
+.capstone-card .combines{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 18px}
+.capstone-card .combines .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--purple);background:rgba(180,140,255,.08);padding:3px 9px;border-radius:4px;border:1px solid rgba(180,140,255,.3)}
+.capstone-card pre.ascii{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:18px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);line-height:1.5;overflow-x:auto;margin:12px 0;white-space:pre}
+
+/* ADAPTER PATTERN */
+.pattern-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:30px;margin:24px 0}
+.pattern-box pre{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:20px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--text);overflow-x:auto;white-space:pre}
+.pattern-box pre .file{color:var(--cyan)}
+.pattern-box pre .arrow{color:var(--orange)}
+.pattern-box pre .key{color:var(--yellow)}
+
+/* DEBUGGING */
+.debug-recipe{background:linear-gradient(135deg,rgba(255,224,102,.05),rgba(240,160,64,.05));border:1px solid rgba(255,224,102,.2);border-radius:var(--radius);padding:28px;margin:20px 0}
+.debug-recipe h4{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--yellow);margin-bottom:14px}
+.debug-recipe pre{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px 18px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-bright);overflow-x:auto;margin:10px 0}
+.debug-recipe .cmd-list{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);columns:2;column-gap:30px;margin-top:14px}
+.debug-recipe .cmd-list li{margin-bottom:4px;break-inside:avoid;list-style:none}
+.debug-recipe .cmd-list code{color:var(--yellow);background:none;padding:0;border:none}
+
+/* GLOSSARY */
+.glossary{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.glossary th{background:var(--bg3);color:var(--purple);font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.8px;text-align:left;padding:12px 16px;border-bottom:2px solid var(--border)}
+.glossary td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:.92rem;vertical-align:top}
+.glossary td:first-child{font-family:'IBM Plex Mono',monospace;color:var(--cyan);white-space:nowrap;font-weight:500;width:200px}
+.glossary tr:last-child td{border-bottom:none}
+.glossary tr:hover td{background:rgba(180,140,255,.03)}
+
+/* REFERENCES */
+.refs{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.refs ul{list-style:none}
+.refs li{padding:8px 0;border-bottom:1px dashed var(--border);font-size:.92rem}
+.refs li:last-child{border-bottom:none}
+.refs li::before{content:'▸ ';color:var(--text-dim);font-family:'IBM Plex Mono',monospace}
+
+/* FOOTER */
+footer{text-align:center;padding:40px 24px;margin-top:60px;border-top:1px solid var(--border);color:var(--text-dim);font-size:.85rem;font-family:'IBM Plex Mono',monospace}
+footer a{color:var(--text-dim)}
+footer a:hover{color:var(--blue)}
+
+@media (max-width:600px){
+  .topnav{font-size:10px;padding:6px 10px}
+  .topnav a{padding:3px 6px;font-size:10px}
+  .hero{padding:50px 16px 40px}
+  .container{padding:0 16px}
+  .debug-recipe .cmd-list{columns:1}
+  .glossary td:first-child{width:auto}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="#hero">↑ Top</a>
+  <a href="#setup">Setup</a>
+  <a href="#stack">Stack</a>
+  <a href="#tier1">Tier 1</a>
+  <a href="#tier2">Tier 2</a>
+  <a href="#tier3">Tier 3</a>
+  <a href="#tier4">Tier 4</a>
+  <a href="#capstones">Capstones</a>
+  <a href="#adapter">Adapter</a>
+  <a href="#debug">Debug</a>
+  <a href="#glossary">Glossary</a>
+  <a href="#refs">Refs</a>
+</nav>
+
+<section class="hero" id="hero">
+  <h1>LangGraph <em>Playground</em></h1>
+  <div class="sub">A zero-to-hero study guide — LangChain 1.x &amp; LangGraph 1.x · May 2026</div>
+  <div class="build-end">
+    <strong>By the end you'll have built:</strong> a multi-agent research assistant, a stateful customer-support bot with human-in-the-loop escalation, and a RAG Q&amp;A API running in Docker with Postgres-backed state.
+  </div>
+</section>
+
+<div class="container">
+
+<!-- ============================== SETUP ============================== -->
+<section class="sec" id="setup">
+  <div class="sec-head">
+    <span class="sec-num s-blue">00 · BOOT</span>
+    <h2 class="sec-title">Three commands and you're running</h2>
+  </div>
+  <p class="sec-intro">The whole curriculum runs on either Anthropic or OpenAI. Pick one, drop the key in <code>.env</code>, and every lesson works without further config.</p>
+
+  <div class="quickstart">
+    <h3>▷ quick start</h3>
+<pre><span class="cmd">uv sync</span>                                       <span class="cmt"># installs everything</span>
+<span class="cmd">cp .env.example .env</span>                          <span class="cmt"># then fill in ANTHROPIC_API_KEY</span>
+<span class="cmd">uv run python -m lessons.00_setup.example</span>     <span class="cmt"># smoke test</span></pre>
+    <p style="color:var(--text-dim);font-size:.9rem;margin-top:14px">Don't have <code>uv</code>? Grab it from <a href="https://docs.astral.sh/uv/" target="_blank">docs.astral.sh/uv</a>. The capstones that need extras: <code>uv sync --extra api</code> and <code>uv sync --extra dev</code>.</p>
+  </div>
+</section>
+
+<!-- ============================== STACK ============================== -->
+<section class="sec" id="stack">
+  <div class="sec-head">
+    <span class="sec-num s-cyan">01 · STACK</span>
+    <h2 class="sec-title">What you're learning (versions)</h2>
+  </div>
+
+  <table class="stack-table">
+    <thead><tr><th>Library</th><th>Version</th><th>Why it's in the project</th></tr></thead>
+    <tbody>
+      <tr><td class="pkg">langchain</td>           <td class="ver">1.3.x</td> <td>The new <code>create_agent</code> API + middleware</td></tr>
+      <tr><td class="pkg">langgraph</td>           <td class="ver">1.2.x</td> <td><code>StateGraph</code>, checkpointers, <code>interrupt()</code></td></tr>
+      <tr><td class="pkg">langgraph-supervisor</td><td class="ver">0.0.31</td><td>One-line supervisor agent</td></tr>
+      <tr><td class="pkg">langgraph-swarm</td>    <td class="ver">0.1.x</td> <td>Peer-to-peer handoffs</td></tr>
+      <tr><td class="pkg">langchain-chroma</td>    <td class="ver">latest</td><td>Local vector store for RAG</td></tr>
+      <tr><td class="pkg">fastembed</td>           <td class="ver">latest</td><td>Local CPU embeddings — no extra API key</td></tr>
+      <tr><td class="pkg">pydantic + pydantic-settings</td><td class="ver">2.x</td><td>Structured output, typed env</td></tr>
+      <tr><td class="pkg">ipdb</td>                <td class="ver">0.13.x</td><td>Interactive debugging — taught in lesson 03</td></tr>
+      <tr><td class="pkg">fastapi + uvicorn</td>   <td class="ver">latest</td><td>Capstone API</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================== TIER 1 ============================== -->
+<section class="sec tier-1" id="tier1">
+  <div class="sec-head">
+    <span class="sec-num s-blue">TIER 1</span>
+    <h2 class="sec-title">LangChain fundamentals</h2>
+  </div>
+  <p class="sec-intro">Six small lessons that get you from "I've never called an LLM from Python" to "I can compose chains, debug them, extract structured data, and use tools." Everything else builds on this tier.</p>
+
+  <div class="grid">
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 00</div>
+      <h3>Setup</h3>
+      <p class="learn">Env vars, the <code>get_llm()</code> factory, your first <code>llm.invoke()</code>.</p>
+      <div class="apis"><span class="api">get_llm()</span><span class="api">.invoke()</span></div>
+      <a href="../lessons/00_setup/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 01</div>
+      <h3>Chat models</h3>
+      <p class="learn">Messages, prompt templates, the role of <code>SystemMessage</code> / <code>HumanMessage</code>. Your first <code>prompt | llm</code> chain.</p>
+      <div class="apis"><span class="api">ChatPromptTemplate</span><span class="api">MessagesPlaceholder</span></div>
+      <a href="../lessons/01_chat_models/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 02</div>
+      <h3>LCEL chains</h3>
+      <p class="learn">The pipe operator, <code>RunnableParallel</code>, <code>RunnableLambda</code>. All four execution modes: invoke / batch / stream / ainvoke.</p>
+      <div class="apis"><span class="api">RunnableParallel</span><span class="api">RunnableLambda</span><span class="api">.stream()</span></div>
+      <a href="../lessons/02_lcel_chains/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 03</div>
+      <h3>Debugging with ipdb</h3>
+      <p class="learn"><code>breakpoint()</code> + <code>PYTHONBREAKPOINT=ipdb.set_trace</code>. Step through Runnables, async code, and use <code>.with_listeners()</code> for non-stop logging.</p>
+      <div class="apis"><span class="api">ipdb</span><span class="api">breakpoint()</span><span class="api">.with_listeners()</span></div>
+      <a href="../lessons/03_debugging/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 04</div>
+      <h3>Structured output</h3>
+      <p class="learn">Pydantic schemas + <code>with_structured_output(MySchema)</code>. Extraction and classification patterns.</p>
+      <div class="apis"><span class="api">with_structured_output</span><span class="api">BaseModel</span></div>
+      <a href="../lessons/04_structured_output/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 05</div>
+      <h3>Tools</h3>
+      <p class="learn">The <code>@tool</code> decorator, <code>bind_tools</code>, and the full tool-call round-trip you need to <em>see by hand</em> before lesson 10's <code>create_agent</code> clicks.</p>
+      <div class="apis"><span class="api">@tool</span><span class="api">bind_tools</span><span class="api">ToolMessage</span></div>
+      <a href="../lessons/05_tools/README.md">→ open lesson</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== TIER 2 ============================== -->
+<section class="sec tier-2" id="tier2">
+  <div class="sec-head">
+    <span class="sec-num s-green">TIER 2</span>
+    <h2 class="sec-title">Retrieval-Augmented Generation</h2>
+  </div>
+  <p class="sec-intro">RAG is the default architecture for "talk to my documents." Lesson 06 walks the vanilla pipeline; lesson 07 layers on the two retriever upgrades you'll reach for first.</p>
+
+  <div class="grid">
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 06</div>
+      <h3>RAG basics</h3>
+      <p class="learn">Load → split → embed → store → retrieve → generate. Local Chroma + FastEmbed so you need <em>zero</em> additional API keys.</p>
+      <div class="apis"><span class="api">RecursiveCharacterTextSplitter</span><span class="api">Chroma</span><span class="api">FastEmbedEmbeddings</span></div>
+      <a href="../lessons/06_rag_basics/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 07</div>
+      <h3>RAG advanced</h3>
+      <p class="learn"><code>MultiQueryRetriever</code> (LLM expands the query) and <code>ContextualCompressionRetriever</code> (LLM filters the chunks). Stack them.</p>
+      <div class="apis"><span class="api">MultiQueryRetriever</span><span class="api">LLMChainExtractor</span></div>
+      <a href="../lessons/07_rag_advanced/README.md">→ open lesson</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== TIER 3 ============================== -->
+<section class="sec tier-3" id="tier3">
+  <div class="sec-head">
+    <span class="sec-num s-purple">TIER 3</span>
+    <h2 class="sec-title">LangGraph core</h2>
+  </div>
+  <p class="sec-intro">The graph is the moment your agent becomes a system. State, edges, persistence, HITL, streaming, subgraphs — eight lessons that take you from the smallest <code>StateGraph</code> to production patterns.</p>
+
+  <div class="grid">
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 08</div>
+      <h3>LangGraph basics</h3>
+      <p class="learn">Your first <code>StateGraph</code>: TypedDict state, nodes that return partial updates, the <code>START</code> / <code>END</code> sentinels.</p>
+      <div class="apis"><span class="api">StateGraph</span><span class="api">MessagesState</span></div>
+      <a href="../lessons/08_langgraph_basics/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 09</div>
+      <h3>Conditional edges</h3>
+      <p class="learn">Branching with <code>add_conditional_edges</code>. The self-improving draft→score→revise loop, bounded with a counter.</p>
+      <div class="apis"><span class="api">add_conditional_edges</span></div>
+      <a href="../lessons/09_conditional_edges/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 10</div>
+      <h3>create_agent</h3>
+      <p class="learn"><strong>The LangChain v1 prebuilt agent.</strong> One call, model + tools + system prompt → ready-to-invoke LangGraph agent. Replaces <code>create_react_agent</code>.</p>
+      <div class="apis"><span class="api">create_agent</span><span class="api">ToolNode</span></div>
+      <a href="../lessons/10_create_agent/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 11</div>
+      <h3>Agent middleware</h3>
+      <p class="learn">Six hook points around <code>create_agent</code>: <code>before_agent</code>, <code>before_model</code>, <code>wrap_model_call</code>, <code>wrap_tool_call</code>, <code>after_model</code>, <code>after_agent</code>. Custom + prebuilt.</p>
+      <div class="apis"><span class="api">AgentMiddleware</span><span class="api">SummarizationMiddleware</span><span class="api">PIIMiddleware</span></div>
+      <a href="../lessons/11_agent_middleware/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 12</div>
+      <h3>Persistence</h3>
+      <p class="learn"><code>MemorySaver</code> → <code>SqliteSaver</code> → <code>PostgresSaver</code>. Threads, <code>get_state_history</code>, and time-travel from any past checkpoint.</p>
+      <div class="apis"><span class="api">MemorySaver</span><span class="api">SqliteSaver</span><span class="api">thread_id</span></div>
+      <a href="../lessons/12_persistence/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 13</div>
+      <h3>Human-in-the-loop</h3>
+      <p class="learn"><code>interrupt()</code> + <code>Command(resume=…)</code>. Approve / reject / edit gates around irreversible side effects.</p>
+      <div class="apis"><span class="api">interrupt</span><span class="api">Command</span></div>
+      <a href="../lessons/13_human_in_the_loop/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 14</div>
+      <h3>Streaming</h3>
+      <p class="learn">All four <code>stream_mode</code>s plus <code>astream_events("v2")</code>. Pick token-level for chat UIs, updates for SSE, custom for progress bars.</p>
+      <div class="apis"><span class="api">stream_mode</span><span class="api">astream_events</span><span class="api">get_stream_writer</span></div>
+      <a href="../lessons/14_streaming/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 15</div>
+      <h3>Subgraphs</h3>
+      <p class="learn">Composition: a graph that calls another compiled graph from inside a node. The reducer pattern (<code>Annotated[list, add]</code>) for fan-in.</p>
+      <div class="apis"><span class="api">subgraph.invoke</span><span class="api">Annotated</span><span class="api">add</span></div>
+      <a href="../lessons/15_subgraphs/README.md">→ open lesson</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== TIER 4 ============================== -->
+<section class="sec tier-4" id="tier4">
+  <div class="sec-head">
+    <span class="sec-num s-orange">TIER 4</span>
+    <h2 class="sec-title">Multi-agent &amp; long-term memory</h2>
+  </div>
+  <p class="sec-intro">Now you've got the primitives. These three lessons cover the two dominant multi-agent topologies and the <code>Store</code> API that lets memory survive across separate conversations.</p>
+
+  <div class="grid">
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 16</div>
+      <h3>Supervisor</h3>
+      <p class="learn">One router + N specialist workers. <code>create_supervisor</code> wires them up; the supervisor's prompt is the routing logic. The most-deployed multi-agent shape in production.</p>
+      <div class="apis"><span class="api">create_supervisor</span></div>
+      <a href="../lessons/16_supervisor/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 17</div>
+      <h3>Swarm</h3>
+      <p class="learn">Peer agents hand off to each other directly via <code>create_handoff_tool</code>. No central router — leaner when two or three agents own different phases of work.</p>
+      <div class="apis"><span class="api">create_swarm</span><span class="api">create_handoff_tool</span></div>
+      <a href="../lessons/17_swarm/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 18</div>
+      <h3>Long-term memory</h3>
+      <p class="learn">Checkpointers persist a <em>conversation</em>; the <code>Store</code> persists a <em>user</em>. Cross-thread, semantic-searchable memory keyed by namespace.</p>
+      <div class="apis"><span class="api">InMemoryStore</span><span class="api">store.put</span><span class="api">store.search</span></div>
+      <a href="../lessons/18_long_term_memory/README.md">→ open lesson</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== CAPSTONES ============================== -->
+<section class="sec" id="capstones">
+  <div class="sec-head">
+    <span class="sec-num s-pink">CAPSTONES</span>
+    <h2 class="sec-title">Three projects that combine everything</h2>
+  </div>
+  <p class="sec-intro">Each capstone exercises several lessons together. Read the project README for run instructions and an end-to-end walkthrough.</p>
+
+  <div class="capstone-card">
+    <h3>🔬 research_assistant</h3>
+    <div class="tagline">Supervisor → researcher (Tavily) → writer → critic. Outputs a Markdown report with inline citations.</div>
+    <div class="combines">
+      <span class="tag">Lesson 02 · LCEL</span>
+      <span class="tag">Lesson 05 · tools</span>
+      <span class="tag">Lesson 10 · create_agent</span>
+      <span class="tag">Lesson 16 · supervisor</span>
+    </div>
+<pre class="ascii">    user
+      │
+      ▼
+   supervisor
+   ┌────┼────┐
+   ▼    ▼    ▼
+researcher writer critic
+ (Tavily)  (LLM)  (LLM)</pre>
+    <a href="../projects/research_assistant/README.md">→ open capstone</a>
+  </div>
+
+  <div class="capstone-card">
+    <h3>💬 customer_support_bot</h3>
+    <div class="tagline">Stateful CLI bot with summarisation middleware, Sqlite persistence, and an <code>interrupt()</code>-based refund-approval gate.</div>
+    <div class="combines">
+      <span class="tag">Lesson 06 · RAG</span>
+      <span class="tag">Lesson 10 · create_agent</span>
+      <span class="tag">Lesson 11 · middleware</span>
+      <span class="tag">Lesson 12 · persistence</span>
+      <span class="tag">Lesson 13 · HITL</span>
+    </div>
+<pre class="ascii">  > How many PTO days do I get?
+  > I want a refund of $250 on order #99
+  ⚠  HITL needed: {amount: 250, ...}
+    Type /approve or /reject.
+  > /approve</pre>
+    <a href="../projects/customer_support_bot/README.md">→ open capstone</a>
+  </div>
+
+  <div class="capstone-card">
+    <h3>🚀 rag_qa_api</h3>
+    <div class="tagline">Production-shaped FastAPI service. Two-node graph (retrieve → generate), Postgres-backed state, SSE streaming, dockerised, discoverable by LangGraph Studio.</div>
+    <div class="combines">
+      <span class="tag">Lesson 06 · RAG</span>
+      <span class="tag">Lesson 08 · graph</span>
+      <span class="tag">Lesson 12 · persistence</span>
+      <span class="tag">Lesson 14 · streaming</span>
+    </div>
+<pre class="ascii">client ──HTTP──▶ FastAPI ──invoke──▶ LangGraph
+                                        │
+                                        ├── retrieve (Chroma + FastEmbed)
+                                        └── generate (Anthropic / OpenAI)
+
+state checkpointed to: Postgres (AsyncPostgresSaver)</pre>
+    <a href="../projects/rag_qa_api/README.md">→ open capstone</a>
+  </div>
+</section>
+
+<!-- ============================== ADAPTER ============================== -->
+<section class="sec" id="adapter">
+  <div class="sec-head">
+    <span class="sec-num s-cyan">PATTERN</span>
+    <h2 class="sec-title">The switchable LLM provider layer</h2>
+  </div>
+  <p class="sec-intro">Lessons never instantiate <code>ChatAnthropic</code> or <code>ChatOpenAI</code> directly. They call <code>get_llm()</code> and the right model comes back. Flipping providers is one env var.</p>
+
+  <div class="pattern-box">
+<pre><span class="key">.env</span>  (LLM_PROVIDER=openai)
+        │
+        ▼
+<span class="file">shared/settings.py</span>  <span class="arrow">──►</span>  settings.llm_provider
+        │
+        ▼
+<span class="file">shared/llm/base.py</span>  <span class="arrow">──►</span>  get_llm()  <span class="arrow">──►</span>  <span class="file">openai_adapter.build()</span>
+                                       <span class="arrow">└►</span>  <span class="file">anthropic_adapter.build()</span></pre>
+
+    <p style="margin-top:18px;color:var(--text)">Adding a new provider (Gemini, Ollama, anything) is one file:</p>
+
+<pre><span class="key">1.</span> <span class="cmd" style="color:var(--green)">uv add langchain-google-genai</span>
+<span class="key">2.</span> Create <span class="file">shared/llm/google_adapter.py</span> with a <code>build()</code> function
+<span class="key">3.</span> Add <code>google_api_key</code> to <span class="file">shared/settings.py</span>
+<span class="key">4.</span> Register it in <span class="file">shared/llm/base.py</span>:
+
+   _ADAPTERS = {
+       "anthropic": anthropic_adapter.build,
+       "openai":    openai_adapter.build,
+       "google":    google_adapter.build,  <span class="arrow">← new</span>
+   }</pre>
+    <p style="margin-top:18px;color:var(--text-dim);font-size:.9rem">That's the whole change. No lesson code needs to be touched.</p>
+  </div>
+</section>
+
+<!-- ============================== DEBUG ============================== -->
+<section class="sec" id="debug">
+  <div class="sec-head">
+    <span class="sec-num s-orange">DEBUG</span>
+    <h2 class="sec-title">The ipdb recipe</h2>
+  </div>
+  <p class="sec-intro">Lesson 03 covers this in depth. Here's the cheat sheet you'll come back to.</p>
+
+  <div class="debug-recipe">
+    <h4>▷ Drop into ipdb at any <code>breakpoint()</code></h4>
+<pre>PYTHONBREAKPOINT=ipdb.set_trace uv run python -m lessons.NN_topic.example</pre>
+
+    <h4 style="margin-top:18px">▷ The commands you'll use 90% of the time</h4>
+    <ul class="cmd-list">
+      <li><code>n</code> — next line</li>
+      <li><code>s</code> — step into a call</li>
+      <li><code>c</code> — continue to next breakpoint</li>
+      <li><code>p x</code> — print x</li>
+      <li><code>pp x</code> — pretty-print x</li>
+      <li><code>w</code> — stack trace (where am I?)</li>
+      <li><code>l</code> — list source around current line</li>
+      <li><code>u</code> / <code>d</code> — move up/down stack</li>
+      <li><code>!expr</code> — execute Python (mutate state)</li>
+      <li><code>q</code> — quit</li>
+    </ul>
+
+    <h4 style="margin-top:18px">▷ Async works too</h4>
+<pre>ipdb> await chain.ainvoke({"language": "French"})</pre>
+    <p style="color:var(--text-dim);font-size:.88rem;margin-top:8px">In production you graduate to <strong>LangSmith</strong> — set <code>LANGSMITH_TRACING=true</code> in <code>.env</code> and every Runnable + node becomes a clickable trace.</p>
+  </div>
+</section>
+
+<!-- ============================== GLOSSARY ============================== -->
+<section class="sec" id="glossary">
+  <div class="sec-head">
+    <span class="sec-num s-purple">GLOSSARY</span>
+    <h2 class="sec-title">The vocabulary you'll meet</h2>
+  </div>
+
+  <table class="glossary">
+    <thead><tr><th>Term</th><th>One-line meaning</th></tr></thead>
+    <tbody>
+      <tr><td>Runnable</td>          <td>LangChain's base unit — anything with <code>.invoke / .stream / .batch / .ainvoke</code></td></tr>
+      <tr><td>LCEL</td>               <td>LangChain Expression Language — composing Runnables with the <code>|</code> pipe</td></tr>
+      <tr><td>StateGraph</td>         <td>LangGraph's stateful workflow primitive</td></tr>
+      <tr><td>MessagesState</td>      <td>A built-in state type with a <code>messages</code> list and an append reducer</td></tr>
+      <tr><td>Node</td>               <td>A function <code>(state) → partial_state</code> that runs at a graph step</td></tr>
+      <tr><td>Edge</td>               <td>A directed transition between nodes — static or conditional</td></tr>
+      <tr><td>ToolNode</td>           <td>A prebuilt node that executes any <code>tool_calls</code> from the last AI message</td></tr>
+      <tr><td>Reducer</td>            <td>A function that decides how new state values merge with existing ones</td></tr>
+      <tr><td>Checkpointer</td>       <td>Persistence layer — saves graph state after every step</td></tr>
+      <tr><td>Thread</td>             <td>A conversation id (<code>thread_id</code>) used to scope checkpoints</td></tr>
+      <tr><td>Interrupt</td>          <td>A pause point that yields to a human, then resumes with <code>Command(resume=...)</code></td></tr>
+      <tr><td>Middleware</td>         <td>Composable hooks around <code>create_agent</code>: <code>before_model</code>, <code>wrap_tool_call</code>, etc.</td></tr>
+      <tr><td>Supervisor</td>         <td>A boss agent that routes work to specialised worker agents</td></tr>
+      <tr><td>Swarm</td>              <td>A flat group of agents that hand off to each other directly</td></tr>
+      <tr><td>Store</td>              <td>Long-term memory API — survives across threads, keyed by namespace</td></tr>
+      <tr><td>Handoff tool</td>       <td>A specially-shaped <code>@tool</code> that transfers control between agents in a swarm</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================== REFS ============================== -->
+<section class="sec" id="refs">
+  <div class="sec-head">
+    <span class="sec-num s-blue">REFS</span>
+    <h2 class="sec-title">References</h2>
+  </div>
+
+  <div class="refs">
+    <ul>
+      <li><a href="https://docs.langchain.com/oss/python/" target="_blank">LangChain documentation (Python)</a></li>
+      <li><a href="https://docs.langchain.com/oss/python/langgraph/" target="_blank">LangGraph documentation</a></li>
+      <li><a href="https://github.com/langchain-ai/langgraph" target="_blank">LangGraph repository</a></li>
+      <li><a href="https://reference.langchain.com/python/langgraph-supervisor" target="_blank">langgraph-supervisor reference</a></li>
+      <li><a href="https://reference.langchain.com/python/langgraph-swarm" target="_blank">langgraph-swarm reference</a></li>
+      <li><a href="https://blog.langchain.com/building-langgraph/" target="_blank">Building LangGraph: an agent runtime from first principles</a></li>
+      <li><a href="https://docs.langchain.com/oss/javascript/releases/langchain-v1" target="_blank">What's new in LangChain v1 (highlights the <code>create_agent</code> API + content blocks)</a></li>
+      <li><a href="https://docs.astral.sh/uv/" target="_blank">uv — modern Python package manager</a></li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>LangGraph Playground · zero-to-hero curriculum · <a href="../README.md">README</a> · <a href="architecture.html">Architecture</a></p>
+  <p style="margin-top:10px">Single-file HTML. No build step. Open in any browser; print to PDF for offline study.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangGraph Playground — Architecture &amp; Patterns</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0e14; --bg2:#111820; --bg3:#182030;
+  --surface:#1a2332; --border:#263040;
+  --text:#dce5f0; --text-dim:#7a8a9e; --text-bright:#f0f4f8;
+  --blue:#4dacff; --green:#44d488; --orange:#f0a040; --red:#ff5c5c;
+  --purple:#b48cff; --pink:#ff6eb4; --cyan:#40d8d0; --yellow:#ffe066;
+  --radius:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Lora',serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+::selection{background:var(--blue);color:var(--bg)}
+a{color:var(--blue);text-decoration:none;border-bottom:1px dashed transparent;transition:.2s}
+a:hover{border-bottom-color:var(--blue)}
+code{font-family:'IBM Plex Mono',monospace;font-size:.88em;background:var(--bg3);color:var(--cyan);padding:1px 6px;border-radius:4px;border:1px solid var(--border)}
+
+.topnav{position:sticky;top:0;z-index:100;background:rgba(10,14,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.topnav a{color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;padding:5px 10px;border-radius:5px;letter-spacing:.4px;text-transform:uppercase;border-bottom:none}
+.topnav a:hover{color:var(--blue);background:rgba(77,172,255,.08)}
+
+.hero{text-align:center;padding:80px 24px 60px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg at 50% 50%,rgba(64,216,208,.05) 0deg,rgba(180,140,255,.04) 120deg,rgba(77,172,255,.05) 240deg,rgba(64,216,208,.05) 360deg);animation:spin 45s linear infinite;z-index:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4.5vw,3.4rem);font-weight:900;position:relative;color:var(--text-bright);line-height:1.1;z-index:1}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--cyan),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .sub{color:var(--text-dim);font-size:1.05rem;margin-top:18px;font-family:'IBM Plex Mono',monospace;font-weight:400;letter-spacing:.5px;position:relative;z-index:1}
+
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+
+.sec{margin:60px 0;padding-top:30px}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:30px;border-bottom:2px solid var(--border);padding-bottom:16px}
+.sec-num{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;padding:5px 12px;border-radius:6px;letter-spacing:1.5px;background:var(--bg3);border:1px solid var(--border)}
+.sec-num.s-blue{color:var(--blue);border-color:rgba(77,172,255,.4)}
+.sec-num.s-cyan{color:var(--cyan);border-color:rgba(64,216,208,.4)}
+.sec-num.s-purple{color:var(--purple);border-color:rgba(180,140,255,.4)}
+.sec-num.s-orange{color:var(--orange);border-color:rgba(240,160,64,.4)}
+.sec-num.s-pink{color:var(--pink);border-color:rgba(255,110,180,.4)}
+.sec-num.s-green{color:var(--green);border-color:rgba(68,212,136,.4)}
+.sec-title{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:700;color:var(--text-bright)}
+.sec-intro{color:var(--text-dim);font-size:1rem;margin-bottom:24px;max-width:780px}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin:20px 0}
+.card h3{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--text-bright);margin-bottom:14px}
+.card p{margin-bottom:12px}
+
+pre.ascii{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:20px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);line-height:1.6;overflow-x:auto;margin:14px 0;white-space:pre}
+pre.ascii .lbl{color:var(--cyan)}
+pre.ascii .arr{color:var(--orange)}
+pre.ascii .key{color:var(--yellow)}
+pre.ascii .com{color:var(--text-dim);font-style:italic}
+
+/* MODULE TREE */
+.tree{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.75;color:var(--text);overflow-x:auto}
+.tree .dir{color:var(--blue);font-weight:600}
+.tree .file{color:var(--text)}
+.tree .com{color:var(--text-dim);font-style:italic}
+.tree .hi{color:var(--yellow)}
+
+/* COMPARISON TABLES */
+.cmp{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:20px 0}
+.cmp th{background:var(--bg3);color:var(--purple);font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.8px;text-align:left;padding:12px 16px;border-bottom:2px solid var(--border)}
+.cmp td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:.92rem;vertical-align:top}
+.cmp tr:last-child td{border-bottom:none}
+.cmp tr:hover td{background:rgba(180,140,255,.03)}
+.cmp td:first-child{color:var(--cyan);font-family:'IBM Plex Mono',monospace;font-size:.85em;white-space:nowrap}
+
+/* ONION DIAGRAM */
+.onion{display:flex;flex-direction:column;align-items:center;padding:30px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin:20px 0}
+.onion .layer{padding:14px 30px;border-radius:50px;font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;color:var(--text-bright);margin:6px 0;min-width:340px}
+.onion .l0{background:rgba(77,172,255,.15);border:1px solid var(--blue);min-width:500px;font-weight:600}
+.onion .l1{background:rgba(180,140,255,.12);border:1px solid var(--purple);min-width:440px}
+.onion .l2{background:rgba(240,160,64,.10);border:1px solid var(--orange);min-width:380px}
+.onion .l3{background:rgba(68,212,136,.10);border:1px solid var(--green);min-width:320px}
+.onion .l4{background:rgba(255,110,180,.10);border:1px solid var(--pink);min-width:260px}
+.onion .core{background:rgba(255,224,102,.18);border:1px solid var(--yellow);font-weight:700;color:var(--yellow);min-width:200px}
+.onion .lbl{color:var(--text-dim);font-size:11px;margin-top:4px;font-family:'IBM Plex Mono',monospace}
+
+/* CALLOUT */
+.callout{background:linear-gradient(135deg,rgba(77,172,255,.08),rgba(180,140,255,.05));border:1px solid rgba(77,172,255,.3);border-left:4px solid var(--blue);border-radius:6px;padding:16px 20px;margin:18px 0;font-size:.93rem}
+.callout strong{color:var(--blue);font-family:'IBM Plex Mono',monospace;font-size:.85em;text-transform:uppercase;letter-spacing:1px;margin-right:8px}
+
+footer{text-align:center;padding:40px 24px;margin-top:60px;border-top:1px solid var(--border);color:var(--text-dim);font-size:.85rem;font-family:'IBM Plex Mono',monospace}
+footer a{color:var(--text-dim)}
+footer a:hover{color:var(--blue)}
+
+@media (max-width:600px){
+  .topnav{font-size:10px;padding:6px 10px}
+  .topnav a{padding:3px 6px;font-size:10px}
+  .hero{padding:50px 16px 40px}
+  .container{padding:0 16px}
+  .onion .layer{min-width:0;width:100%;font-size:11px;padding:10px 16px}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <a href="curriculum.html">← Curriculum</a>
+  <a href="#hero">↑ Top</a>
+  <a href="#modules">Modules</a>
+  <a href="#adapter">Adapter</a>
+  <a href="#middleware">Middleware</a>
+  <a href="#research">Research</a>
+  <a href="#support">Support bot</a>
+  <a href="#qa-api">QA API</a>
+  <a href="#multi">Sup vs Swarm</a>
+  <a href="#persist">Persistence</a>
+  <a href="#stream">Streaming</a>
+</nav>
+
+<section class="hero" id="hero">
+  <h1>System <em>architecture</em></h1>
+  <div class="sub">Module map · patterns · capstone diagrams</div>
+</section>
+
+<div class="container">
+
+<!-- ============================== MODULES ============================== -->
+<section class="sec" id="modules">
+  <div class="sec-head">
+    <span class="sec-num s-blue">01 · MAP</span>
+    <h2 class="sec-title">Module layout</h2>
+  </div>
+  <p class="sec-intro">Three top-level packages and a small <code>shared/</code> kernel. Lessons import only from <code>shared/</code>; capstones occasionally cross-import.</p>
+
+  <div class="tree">
+<span class="dir">LanggraphPlayground/</span>
+├─ <span class="dir">shared/</span>                       <span class="com"># tiny kernel — settings + LLM factory + printers</span>
+│   ├─ <span class="file">settings.py</span>             <span class="com"># pydantic-settings; reads .env</span>
+│   ├─ <span class="file">pretty.py</span>               <span class="com"># rich-based printers</span>
+│   └─ <span class="dir">llm/</span>                     <span class="com"># <span class="hi">switchable provider layer</span></span>
+│       ├─ <span class="file">base.py</span>             <span class="com"># get_llm() factory + _ADAPTERS dict</span>
+│       ├─ <span class="file">anthropic_adapter.py</span>
+│       └─ <span class="file">openai_adapter.py</span>
+│
+├─ <span class="dir">lessons/</span>                      <span class="com"># 19 numbered tutorials, one concept each</span>
+│   ├─ <span class="dir">00_setup/</span>                <span class="com"># README.md + example.py + __init__.py</span>
+│   ├─ <span class="dir">01_chat_models/</span>
+│   ├─ <span class="dir">…</span>
+│   └─ <span class="dir">18_long_term_memory/</span>
+│
+├─ <span class="dir">projects/</span>                     <span class="com"># bigger capstones</span>
+│   ├─ <span class="dir">research_assistant/</span>      <span class="com"># supervisor pattern</span>
+│   ├─ <span class="dir">customer_support_bot/</span>    <span class="com"># create_agent + HITL + persistence</span>
+│   └─ <span class="dir">rag_qa_api/</span>              <span class="com"># FastAPI + LangGraph + Postgres + Docker</span>
+│
+├─ <span class="dir">tests/</span>                        <span class="com"># sample pytest for lesson 08</span>
+├─ <span class="dir">data/</span>                         <span class="com"># sample_docs/ + checkpoints + chroma indexes (gitignored)</span>
+├─ <span class="dir">docs/</span>                         <span class="com"># this file + curriculum.html</span>
+│
+├─ <span class="file">pyproject.toml</span>
+├─ <span class="file">uv.lock</span>
+├─ <span class="file">.python-version</span>
+├─ <span class="file">.env.example</span>
+└─ <span class="file">README.md</span>
+  </div>
+
+  <div class="callout">
+    <strong>Import rule</strong> Lessons depend only on <code>shared/</code>. Capstones may depend on <code>shared/</code> and on each other (none currently do). Nothing depends on <code>lessons/</code> — they're terminal leaves.
+  </div>
+</section>
+
+<!-- ============================== ADAPTER ============================== -->
+<section class="sec" id="adapter">
+  <div class="sec-head">
+    <span class="sec-num s-cyan">02 · PATTERN</span>
+    <h2 class="sec-title">Switchable LLM provider layer</h2>
+  </div>
+  <p class="sec-intro">A small factory plus one file per provider. The same pattern used in larger multi-provider systems (Mitrailleuse, Aletheia). Lessons never see a provider SDK directly.</p>
+
+  <div class="card">
+    <h3>The flow</h3>
+<pre class="ascii"><span class="key">.env</span>  LLM_PROVIDER=openai
+        │
+        ▼
+<span class="lbl">shared/settings.py</span>      <span class="arr">──►</span>  settings.llm_provider == "openai"
+        │
+        ▼
+<span class="lbl">shared/llm/base.py</span>      <span class="arr">──►</span>  get_llm()
+        │                              │
+        │                              ▼
+        │                       _ADAPTERS["openai"](model=None)
+        │                              │
+        ▼                              ▼
+   <span class="com"># lesson code</span>           <span class="lbl">shared/llm/openai_adapter.py</span>
+   llm = get_llm()                   build() <span class="arr">──►</span>  ChatOpenAI(...)
+   llm.invoke("hi")</pre>
+  </div>
+
+  <div class="card">
+    <h3>Adding a new provider in 4 steps</h3>
+<pre class="ascii"><span class="key">1.</span> <span class="com">install</span>     uv add langchain-google-genai
+<span class="key">2.</span> <span class="com">adapter</span>     shared/llm/google_adapter.py:
+                  def build(model=None, **kw):
+                      return ChatGoogleGenerativeAI(
+                          model=model or "gemini-2.0-flash",
+                          google_api_key=settings.google_api_key,
+                          **kw)
+
+<span class="key">3.</span> <span class="com">settings</span>    add `google_api_key: str | None = None` to Settings
+
+<span class="key">4.</span> <span class="com">register</span>    shared/llm/base.py:
+                  _ADAPTERS = {
+                      "anthropic": anthropic_adapter.build,
+                      "openai":    openai_adapter.build,
+                      "google":    google_adapter.build,  <span class="arr">← new</span>
+                  }</pre>
+    <p style="color:var(--text-dim);font-size:.92rem;margin-top:10px">No lesson code changes. The change is purely additive — the existing two providers still work.</p>
+  </div>
+</section>
+
+<!-- ============================== MIDDLEWARE ============================== -->
+<section class="sec" id="middleware">
+  <div class="sec-head">
+    <span class="sec-num s-purple">03 · ONION</span>
+    <h2 class="sec-title">Agent middleware lifecycle</h2>
+  </div>
+  <p class="sec-intro">Middleware wraps <code>create_agent</code> in onion-style layers. The outermost <code>before_agent</code> runs first; the innermost <code>wrap_model_call</code>/<code>wrap_tool_call</code> runs last (closest to the actual model/tool). After is symmetrical, in reverse.</p>
+
+  <div class="onion">
+    <div class="layer l0">before_agent &nbsp; · &nbsp; after_agent <div class="lbl">runs once per agent run</div></div>
+    <div class="layer l1">before_model &nbsp; · &nbsp; after_model <div class="lbl">runs once per model call</div></div>
+    <div class="layer l2">wrap_model_call <div class="lbl">full control: you call handler(request)</div></div>
+    <div class="layer l3">wrap_tool_call <div class="lbl">full control: you call handler(call)</div></div>
+    <div class="layer core">⚙ model / tool ⚙</div>
+  </div>
+
+  <div class="card">
+    <h3>Custom middleware = subclass <code>AgentMiddleware</code></h3>
+<pre class="ascii">class CostGuardrail(AgentMiddleware):
+    def __init__(self, max_calls=5):
+        self.max_calls = max_calls
+        self.calls = 0
+
+    def wrap_model_call(self, request, handler):
+        self.calls += 1
+        if self.calls &gt; self.max_calls:
+            raise RuntimeError("budget exceeded")
+        return handler(request)
+
+agent = create_agent(model=..., tools=[...],
+                     middleware=[CostGuardrail(max_calls=5)])</pre>
+  </div>
+
+  <div class="card">
+    <h3>Prebuilts that ship with LangChain v1</h3>
+    <table class="cmp">
+      <thead><tr><th>Class</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>SummarizationMiddleware</td><td>Auto-summarises chat history when it crosses a token / message threshold</td></tr>
+        <tr><td>HumanInTheLoopMiddleware</td><td>Pauses for human approval before configured tools fire</td></tr>
+        <tr><td>PIIMiddleware</td><td>Redacts / masks / blocks emails, credit cards, IPs, etc.</td></tr>
+        <tr><td>ModelCallLimitMiddleware</td><td>Hard cap on model calls per run</td></tr>
+        <tr><td>ToolCallLimitMiddleware</td><td>Hard cap on tool calls per run</td></tr>
+        <tr><td>ToolRetryMiddleware</td><td>Retry policy around tool execution</td></tr>
+        <tr><td>ModelFallbackMiddleware</td><td>Fallback chain if a provider errors</td></tr>
+        <tr><td>ContextEditingMiddleware</td><td>Edits the context before the model sees it</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================== RESEARCH ============================== -->
+<section class="sec" id="research">
+  <div class="sec-head">
+    <span class="sec-num s-pink">04 · CAPSTONE</span>
+    <h2 class="sec-title">research_assistant — supervisor + workers</h2>
+  </div>
+
+  <div class="card">
+<pre class="ascii">                              user
+                                │
+                                ▼
+                         ┌──────────────┐
+                         │  supervisor  │  <span class="com"># langgraph_supervisor</span>
+                         └──┬──────┬──┬─┘
+              <span class="arr">delegates</span>  │      │  │
+                ┌───────────┘      │  └──────────┐
+                ▼                  ▼             ▼
+         <span class="lbl">┌──────────┐</span>      <span class="lbl">┌──────┐</span>      <span class="lbl">┌────────┐</span>
+         │researcher│      │writer│      │ critic │
+         └────┬─────┘      └──────┘      └────────┘
+              │
+       ┌──────┴──────┐
+       ▼             ▼
+  <span class="key">TavilySearch</span>    <span class="key">@tool cite</span>     <span class="com"># lessons 5, 10, 16</span></pre>
+
+    <p>Workflow: researcher gathers cited claims → writer drafts Markdown → critic approves or sends back. The supervisor reads each worker's reply and decides what comes next; when the critic returns <code>APPROVED</code>, the supervisor presents the final report.</p>
+    <p style="margin-top:8px"><a href="../projects/research_assistant/README.md">→ open capstone README</a></p>
+  </div>
+</section>
+
+<!-- ============================== SUPPORT ============================== -->
+<section class="sec" id="support">
+  <div class="sec-head">
+    <span class="sec-num s-pink">05 · CAPSTONE</span>
+    <h2 class="sec-title">customer_support_bot — create_agent + middleware + HITL</h2>
+  </div>
+
+  <div class="card">
+<pre class="ascii">  user                              ┌─────────────────┐
+   │                                │ Sqlite          │
+   ▼                                │ checkpointer    │
+ ┌───────────────────────────────┐  └────────▲────────┘
+ │       create_agent            │           │
+ │  ┌─────────────────────────┐  │           │  per-thread
+ │  │ SummarizationMiddleware │  │           │  state
+ │  │     (lesson 11)         │  │           │
+ │  └─────────────────────────┘  │           │
+ │             │                 │           │
+ │             ▼                 │   ┌───────┴───────┐
+ │       model call              │◄──┤  thread_id    │
+ │             │                 │   │ "cli-session" │
+ │       ┌─────┴─────┐           │   └───────────────┘
+ │       ▼           ▼           │
+ │ lookup_handbook  request_refund  <span class="com"># lessons 5, 6</span>
+ │       │           │           │
+ │   ┌───┴───┐       │           │
+ │   ▼       ▼       ▼           │
+ │ Chroma  FastEmbed  if amount > 100:
+ │                      <span class="key">interrupt(...)</span>  <span class="com"># lesson 13</span>
+ └───────────────────────────────┘
+                                    user resumes with
+                                    <span class="key">Command(resume="approve")</span></pre>
+
+    <p><strong>Slash commands</strong> at the CLI: <code>/approve</code>, <code>/reject</code>, <code>/quit</code>. The conversation survives restarts — Sqlite holds the thread's checkpoints.</p>
+    <p style="margin-top:8px"><a href="../projects/customer_support_bot/README.md">→ open capstone README</a></p>
+  </div>
+</section>
+
+<!-- ============================== QA API ============================== -->
+<section class="sec" id="qa-api">
+  <div class="sec-head">
+    <span class="sec-num s-pink">06 · CAPSTONE</span>
+    <h2 class="sec-title">rag_qa_api — FastAPI + Postgres + Docker</h2>
+  </div>
+
+  <div class="card">
+<pre class="ascii">                    docker compose up
+                          │
+                          ▼
+      ┌────────────────────────────────────┐
+      │  ┌────────────┐    ┌────────────┐  │
+      │  │  postgres  │◄───┤   api      │  │
+      │  │  (state)   │    │  FastAPI   │  │
+      │  └────────────┘    │  uvicorn   │  │
+      │                    └─────┬──────┘  │
+      └──────────────────────────┼─────────┘
+                                 │
+                ┌────────────────┼────────────────┐
+                ▼                ▼                ▼
+          GET /healthz     POST /chat       POST /stream
+                                │                │
+                                ▼                ▼
+                          ┌──────────────────────────┐
+                          │      LangGraph           │
+                          │   ┌─────┐    ┌────────┐  │
+                          │   │retr.│───▶│generate│  │
+                          │   └─────┘    └────────┘  │
+                          │      │           │       │
+                          └──────┼───────────┼───────┘
+                                 │           │
+                                 ▼           ▼
+                           Chroma+FastEmbed  shared.get_llm()
+                                                <span class="com"># Anthropic or OpenAI</span></pre>
+
+    <p>State is checkpointed to Postgres via <code>AsyncPostgresSaver</code>, scoped by <code>thread_id</code>. <code>/stream</code> uses <code>stream_mode="messages"</code> to push tokens as SSE events. <code>langgraph.json</code> exposes the graph as <code>qa</code> for the LangGraph Studio inspector.</p>
+    <p style="margin-top:8px"><a href="../projects/rag_qa_api/README.md">→ open capstone README</a></p>
+  </div>
+</section>
+
+<!-- ============================== SUP vs SWARM ============================== -->
+<section class="sec" id="multi">
+  <div class="sec-head">
+    <span class="sec-num s-orange">07 · COMPARE</span>
+    <h2 class="sec-title">Supervisor vs swarm</h2>
+  </div>
+
+  <div class="card">
+<pre class="ascii">SUPERVISOR (star)              SWARM (mesh)
+─────────────────              ─────────────────
+       user                          user
+        │                              │
+        ▼                              ▼
+   supervisor                       triage  ◄──┐
+   ┌────┼────┐                        │        │
+   ▼    ▼    ▼                     handoff     │  handoff
+  W1   W2   W3                        │        │  back
+                                      ▼        │
+                                   refunder ───┘
++ central control                + zero supervisor hops
++ one prompt to maintain         + lower cost per request
+− extra LLM hop per delegation   − routing logic distributed</pre>
+  </div>
+
+  <table class="cmp">
+    <thead><tr><th></th><th>Supervisor</th><th>Swarm</th></tr></thead>
+    <tbody>
+      <tr><td>Topology</td>          <td>Star — boss in the middle</td>           <td>Mesh — peers</td></tr>
+      <tr><td>Routing</td>           <td>One LLM decides every hop</td>           <td>Each agent decides when to hand off</td></tr>
+      <tr><td>Debug</td>             <td>Easy — one place to look</td>             <td>Harder — handoffs distributed</td></tr>
+      <tr><td>Extra LLM hops</td>    <td>One per delegation</td>                  <td>Zero</td></tr>
+      <tr><td>Best when</td>          <td>You want central control or a stable boss</td><td>2–3 agents own different phases of work</td></tr>
+      <tr><td>Package</td>           <td><code>langgraph-supervisor</code></td>   <td><code>langgraph-swarm</code></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============================== PERSISTENCE ============================== -->
+<section class="sec" id="persist">
+  <div class="sec-head">
+    <span class="sec-num s-green">08 · COMPARE</span>
+    <h2 class="sec-title">Checkpointer choices</h2>
+  </div>
+
+  <table class="cmp">
+    <thead><tr><th>Checkpointer</th><th>When to use</th><th>Trade-off</th></tr></thead>
+    <tbody>
+      <tr><td>MemorySaver</td>     <td>Dev, demos, tests</td>                            <td>Lost on process exit</td></tr>
+      <tr><td>SqliteSaver</td>     <td>Local single-process apps, CLIs</td>              <td>Slow under high write concurrency</td></tr>
+      <tr><td>PostgresSaver</td>   <td>Production web apps, multi-process</td>           <td>Needs a Postgres alongside</td></tr>
+      <tr><td>AsyncPostgresSaver</td><td>Production async apps (FastAPI, etc.)</td>      <td>Same as above; requires <code>--extra api</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Swap rule</strong> The graph definition doesn't change. Only the argument to <code>.compile(checkpointer=…)</code> differs. Test with <code>MemorySaver</code>, ship with <code>PostgresSaver</code>.
+  </div>
+</section>
+
+<!-- ============================== STREAMING ============================== -->
+<section class="sec" id="stream">
+  <div class="sec-head">
+    <span class="sec-num s-cyan">09 · COMPARE</span>
+    <h2 class="sec-title">Streaming modes</h2>
+  </div>
+
+  <table class="cmp">
+    <thead><tr><th>stream_mode=</th><th>Chunk shape</th><th>Best for</th></tr></thead>
+    <tbody>
+      <tr><td>values</td>      <td>Full state dict after each step</td>          <td>Demos, dashboards</td></tr>
+      <tr><td>updates</td>     <td><code>{node_name: partial_update}</code></td><td>Server-sent events, bandwidth-sensitive UIs</td></tr>
+      <tr><td>messages</td>    <td><code>(AIMessageChunk, metadata)</code></td> <td>Chat UIs — token-by-token</td></tr>
+      <tr><td>custom</td>      <td>Whatever you <code>writer(...)</code></td>   <td>Progress bars, telemetry from inside nodes</td></tr>
+      <tr><td>astream_events("v2")</td><td>Per-Runnable lifecycle event</td>    <td>Deep debugging, custom UIs</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Tip</strong> You can pass <code>stream_mode=["updates", "messages"]</code> and chunks come back tagged with their mode. That's how the <code>rag_qa_api</code> capstone could surface both per-node JSON and per-token text in one stream.
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <p>LangGraph Playground · architecture · <a href="curriculum.html">Curriculum</a> · <a href="../README.md">README</a></p>
+  <p style="margin-top:10px">Single-file HTML. No build step. Open in any browser; print to PDF for offline study.</p>
+</footer>
+
+</body>
+</html>
