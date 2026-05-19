@@ -29,6 +29,7 @@ dependencies = [
   "langchain-chroma>=0.2",
   "chromadb>=0.5",
   "fastembed>=0.4",              # local CPU embeddings — no extra API key needed
+  "pypdf>=4.0",                  # PDF parser — lesson 20
 
   # --- Web search tool for capstones ---
   "tavily-python>=0.5",

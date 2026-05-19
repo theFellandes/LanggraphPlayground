@@ -162,6 +162,7 @@ footer a:hover{color:var(--blue)}
   <a href="#tier2">Tier 2</a>
   <a href="#tier3">Tier 3</a>
   <a href="#tier4">Tier 4</a>
+  <a href="#tier5">Tier 5</a>
   <a href="#capstones">Capstones</a>
   <a href="#adapter">Adapter</a>
   <a href="#debug">Debug</a>
@@ -302,6 +303,14 @@ footer a:hover{color:var(--blue)}
       <div class="apis"><span class="api">MultiQueryRetriever</span><span class="api">LLMChainExtractor</span></div>
       <a href="../lessons/07_rag_advanced/README.md">→ open lesson</a>
     </div>
+
+    <div class="lesson-card">
+      <div class="num">▸ Lesson 20 · side-quest</div>
+      <h3>Chunking &amp; parsing</h3>
+      <p class="learn">Four chunkers (Character, Recursive, Token-aware, Markdown-header) and three parser tiers (text-native, structured, AI-powered). Includes a quick tour of Docling / Unstructured / LlamaParse / Guillotine.</p>
+      <div class="apis"><span class="api">RecursiveCharacterTextSplitter</span><span class="api">TokenTextSplitter</span><span class="api">MarkdownHeaderTextSplitter</span><span class="api">PyPDFLoader</span></div>
+      <a href="../lessons/20_chunking_and_parsing/README.md">→ open lesson</a>
+    </div>
   </div>
 </section>
 
@@ -411,6 +420,25 @@ footer a:hover{color:var(--blue)}
       <p class="learn">Checkpointers persist a <em>conversation</em>; the <code>Store</code> persists a <em>user</em>. Cross-thread, semantic-searchable memory keyed by namespace.</p>
       <div class="apis"><span class="api">InMemoryStore</span><span class="api">store.put</span><span class="api">store.search</span></div>
       <a href="../lessons/18_long_term_memory/README.md">→ open lesson</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== TIER 5 ============================== -->
+<section class="sec tier-4" id="tier5">
+  <div class="sec-head">
+    <span class="sec-num s-orange">TIER 5</span>
+    <h2 class="sec-title">Production hardening</h2>
+  </div>
+  <p class="sec-intro">One lesson — but you don't ship without it. Covers the four guardrail axes (input / output / tool / conversation) and the three implementation patterns the industry actually uses: middleware, decorator, and layer-as-node.</p>
+
+  <div class="grid">
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 19</div>
+      <h3>Guardrails</h3>
+      <p class="learn">PII redaction, cost caps, tool-arg validation, output schema enforcement. Compose <code>PIIMiddleware</code> + a custom <code>AgentMiddleware</code> + a <code>@validate_tool_args</code> decorator + a Pydantic <em>judge node</em> on one agent. Brief tour of NeMo Guardrails, Guardrails AI, Llama Guard, and LLM-as-judge.</p>
+      <div class="apis"><span class="api">PIIMiddleware</span><span class="api">AgentMiddleware</span><span class="api">@validate_tool_args</span><span class="api">judge_output</span></div>
+      <a href="../lessons/19_guardrails/README.md">→ open lesson</a>
     </div>
   </div>
 </section>

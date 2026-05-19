@@ -66,6 +66,7 @@ Check the boxes as you go.
 
 - [ ] **[06 · RAG basics](lessons/06_rag_basics/README.md)** — load → split → embed → store → retrieve → generate
 - [ ] **[07 · RAG advanced](lessons/07_rag_advanced/README.md)** — multi-query, parent-document, contextual compression
+- [ ] **[20 · Chunking & parsing strategies](lessons/20_chunking_and_parsing/README.md)** — side-quest: four chunkers + three parser tiers (numbered 20 because added later)
 
 ### Tier 3 · LangGraph core
 
@@ -84,7 +85,11 @@ Check the boxes as you go.
 - [ ] **[17 · Swarm](lessons/17_swarm/README.md)** — peer-to-peer handoffs
 - [ ] **[18 · Long-term memory](lessons/18_long_term_memory/README.md)** — the `Store` API across threads
 
-### Tier 5 · Capstones
+### Tier 5 · Production hardening
+
+- [ ] **[19 · Guardrails](lessons/19_guardrails/README.md)** — input · output · tool · conversation; middleware + decorator + judge node; tour of NeMo, Guardrails AI, Llama Guard
+
+### Tier 6 · Capstones
 
 - [ ] **[research_assistant](projects/research_assistant/README.md)** — supervisor + tools + LCEL writeup
 - [ ] **[customer_support_bot](projects/customer_support_bot/README.md)** — `create_agent` + middleware + HITL + persistence
@@ -101,6 +106,7 @@ LanggraphPlayground/
 ├── shared/     # Helpers every lesson imports (LLM factory, settings, printers)
 ├── data/       # Sample docs for RAG lessons
 ├── docs/       # Standalone HTML study guide + architecture diagrams
+├── skills/     # Five Claude Code skills derived from this repo's patterns
 ├── tests/      # Pytest example showing how to unit-test a StateGraph
 └── pyproject.toml
 ```
@@ -112,6 +118,7 @@ Per-folder summary:
 - **`shared/`** — `settings.py` (typed env), `pretty.py` (rich printers), and `llm/` (provider adapters).
 - **`data/`** — small sample documents used by the RAG lessons. Chroma indexes are written next to them and gitignored.
 - **`docs/`** — single-file HTML reports (`curriculum.html`, `architecture.html`). Self-contained — double-click to open. See [`docs/README.md`](docs/README.md) for how to add more.
+- **`skills/`** — five Claude Code skills (`python-design-patterns-applied`, `python-clean-code`, `fastapi-pytest-functional`, `langgraph-1x-engineering`, `langchain-1x-engineering`). Install with `cp -r skills ~/.claude/skills/langgraph-playground` — see [`skills/README.md`](skills/README.md).
 - **`tests/`** — sample pytest test for lesson 08 showing the testing pattern.
 
 ---

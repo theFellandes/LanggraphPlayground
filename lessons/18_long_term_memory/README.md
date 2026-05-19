@@ -53,10 +53,6 @@ That's the user's full memory bank at that moment.
 - Swap `InMemoryStore` for `PostgresStore` (from `langgraph.store.postgres`) and confirm the memory survives a process restart.
 - Add `index={"dims": 1536, "embed": "openai:text-embedding-3-small"}` to enable **semantic search** over memories, and call `store.search(ns, query="vegetarian recipes")`.
 
-## You made it 🎉
+## Next →
 
-That's the curriculum. Next, head to the capstones in [`projects/`](../../projects/):
-
-- **[research_assistant](../../projects/research_assistant/README.md)** — supervisor + tools + LCEL writeup
-- **[customer_support_bot](../../projects/customer_support_bot/README.md)** — `create_agent` + middleware + HITL + persistence
-- **[rag_qa_api](../../projects/rag_qa_api/README.md)** — FastAPI + LangGraph + Postgres + Docker
+[Lesson 19 · Guardrails](../19_guardrails/README.md) — the production-hardening layer before you ship.
