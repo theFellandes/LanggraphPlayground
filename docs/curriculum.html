@@ -162,7 +162,7 @@ footer a:hover{color:var(--blue)}
   <a href="#tier2">Tier 2</a>
   <a href="#tier3">Tier 3</a>
   <a href="#tier4">Tier 4</a>
-  <a href="#tier5">Tier 5</a>
+  <a href="#tier5">Tier 5+</a>
   <a href="#capstones">Capstones</a>
   <a href="#adapter">Adapter</a>
   <a href="#debug">Debug</a>
@@ -439,6 +439,46 @@ footer a:hover{color:var(--blue)}
       <p class="learn">PII redaction, cost caps, tool-arg validation, output schema enforcement. Compose <code>PIIMiddleware</code> + a custom <code>AgentMiddleware</code> + a <code>@validate_tool_args</code> decorator + a Pydantic <em>judge node</em> on one agent. Brief tour of NeMo Guardrails, Guardrails AI, Llama Guard, and LLM-as-judge.</p>
       <div class="apis"><span class="api">PIIMiddleware</span><span class="api">AgentMiddleware</span><span class="api">@validate_tool_args</span><span class="api">judge_output</span></div>
       <a href="../lessons/19_guardrails/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 21 · research-backed</div>
+      <h3>Date parsing with LLMs</h3>
+      <p class="learn">Four-layer defence-in-depth pipeline (anchored prompt → structured output → <code>dateparser</code> strict re-parse → Pydantic field validator) for birth-date and general date extraction. Backed by clinical-study evidence that GPT-4 alone produces ~17% wrong dates. See <a href="research/date-parsing-with-llms.md">research synthesis</a> + <a href="research/llm-date-solutions-deep-dive.md">10-approach deep dive</a>.</p>
+      <div class="apis"><span class="api">dateparser</span><span class="api">field_validator</span><span class="api">with_structured_output</span><span class="api">RELATIVE_BASE</span></div>
+      <a href="../lessons/21_date_parsing/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 22 · architecture</div>
+      <h3>LLM application architecture</h3>
+      <p class="learn">Purely architectural meta-lesson — the 8 layers (provider · reliability · validation · guardrail · orchestration · state · observability · interface), the four scaling tiers (prototype → pilot → production → multi-tenant), a decision matrix per concern, and anti-patterns from real production incidents. Now with one canonical API-shape snippet per layer.</p>
+      <div class="apis"><span class="api">layered architecture</span><span class="api">scaling tiers</span><span class="api">decision matrix</span><span class="api">anti-patterns</span></div>
+      <a href="../lessons/22_architecture/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 23 · localization</div>
+      <h3>Date computation &amp; localized output</h3>
+      <p class="learn">The OUTPUT side of dates. The <code>today_iso()</code> / <code>add_days()</code> / <code>parse_relative_date()</code> tool pattern so the LLM never does date arithmetic itself, plus <code>babel</code> for locale-aware formatting: <em>"23 Mayıs 2026"</em>, <em>"23. Mai 2026"</em>, <em>"23 مايو 2026"</em>, Persian Jalali (<em>1405/03/02</em>), Islamic Hijri (<em>1447-12-06</em>), Japanese era. Includes a no-API-key demo across 10 locales.</p>
+      <div class="apis"><span class="api">babel</span><span class="api">format_date</span><span class="api">jdatetime</span><span class="api">hijridate</span><span class="api">@tool today_iso</span></div>
+      <a href="../lessons/23_date_localization/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 24 · numbers</div>
+      <h3>Spoken-number → digit normalization</h3>
+      <p class="learn">Library survey (<code>text2num</code> for 7 EU languages, nothing for Turkish, why tokenizers aren't the right tool), a rule-based Turkish number parser, <strong>fuzzy partial-matching</strong> with <code>rapidfuzz</code> and a 3-tier confidence policy (accept / confirm / reject), the <code>parse_spoken_number</code> <code>@tool</code> wrapping <code>text2num</code> + our parser, and an honest answer on <em>"does wrapping it as a tool cause hallucination?"</em>.</p>
+      <div class="apis"><span class="api">text2num</span><span class="api">rapidfuzz</span><span class="api">partial_ratio</span><span class="api">@tool</span></div>
+      <a href="../lessons/24_spoken_numbers/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 25 · tool craft</div>
+      <h3>Tool design patterns</h3>
+      <p class="learn">Consolidates the tool wisdom from lessons 05/10/19/23/24 into one reference. Five canonical shapes (read-only / computation+metadata / side-effect+HITL / router / wrapper), the rich-return-dict principle (so the agent doesn't need the whole conversation back), recoverable vs unrecoverable errors, two real pitfalls (<code>Literal</code> framework rejects, generic wrappers lose schema), 10 anti-patterns, and a tool catalogue.</p>
+      <div class="apis"><span class="api">@tool</span><span class="api">Annotated</span><span class="api">StructuredTool</span><span class="api">confidence + metadata</span></div>
+      <a href="../lessons/25_tool_design/README.md">→ open lesson</a>
     </div>
   </div>
 </section>

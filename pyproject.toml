@@ -30,6 +30,13 @@ dependencies = [
   "chromadb>=0.5",
   "fastembed>=0.4",              # local CPU embeddings — no extra API key needed
   "pypdf>=4.0",                  # PDF parser — lesson 20
+  "dateparser>=1.2",             # multilingual / relative-date parser — lesson 21
+  "babel>=2.17",                 # CLDR locale-aware date formatting — lesson 23
+  "jdatetime>=5.0",              # Persian Jalali calendar — lesson 23
+  "hijridate>=2.3",              # Islamic Hijri calendar (hijri-converter successor) — lesson 23
+  "text2num>=3.0",               # spoken-number → digit, EU langs (no TR) — lesson 24
+  "num2words>=0.5",              # int → spoken-number (round-trip test generator) — lesson 24
+  "rapidfuzz>=3.10",             # typo-tolerant token matching for lesson 24's fuzzy parser
 
   # --- Web search tool for capstones ---
   "tavily-python>=0.5",

@@ -29,6 +29,47 @@ saves you most of the debugging time.
 **Common pitfall:** `from langchain.retrievers import …` no longer
 works. Use `langchain_classic.retrievers` in v1.
 
+### Production-bug to memorise — `date` fields + structured output
+
+Pydantic's `date` / `datetime` / `EmailStr` / `HttpUrl` / `UUID4` fields
+emit a JSON-Schema `"format"` keyword that **Mistral's and OpenAI's
+strict structured-output modes reject** with HTTP 400 *"Received
+unsupported keyword 'format' in schema."* LangChain's
+`_rm_titles` strips `title` but not `format`, and the upstream issue
+([#29604](https://github.com/langchain-ai/langchain/issues/29604)) is
+**closed as "not planned"**.
+
+**Three working fixes**, in order of preference:
+
+```python
+# A · str + Pydantic validator — universal, no LangChain coupling
+class Person(BaseModel):
+    birth_date: str | None = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
+
+    @field_validator("birth_date")
+    @classmethod
+    def _parse(cls, v):
+        if v is None: return None
+        d = dateparser.parse(v, settings={"STRICT_PARSING": True})
+        if d is None: raise ValueError(f"unparseable: {v!r}")
+        return d.date().isoformat()
+
+# B · schema sanitizer — keeps native date typing
+from shared.llm import with_structured_output_safe   # in this repo
+class Person(BaseModel):
+    birth_date: date | None                          # native type works again
+llm = with_structured_output_safe(Person)            # strips "format" first
+
+# C · function_calling mode — sometimes works on providers that reject json_schema
+llm = get_llm().with_structured_output(Person, method="function_calling")
+```
+
+Pick **A** by default. Pick **B** when downstream code needs a real
+`datetime.date`. Pick **C** when you can't change the schema.
+
+See `docs/research/langchain-date-field-bug.md` for the full
+investigation (reproducer, root cause in `_rm_titles`, sanitizer code).
+
 ---
 
 ## Pattern · Switchable provider via `get_llm()`

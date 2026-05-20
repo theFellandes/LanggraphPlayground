@@ -88,6 +88,11 @@ Check the boxes as you go.
 ### Tier 5 · Production hardening
 
 - [ ] **[19 · Guardrails](lessons/19_guardrails/README.md)** — input · output · tool · conversation; middleware + decorator + judge node; tour of NeMo, Guardrails AI, Llama Guard
+- [ ] **[21 · Date parsing with LLMs](lessons/21_date_parsing/README.md)** — INPUT side. Four-layer pipeline (prompt → structured output → `dateparser` → field validator). Backed by [`date-parsing-with-llms.md`](docs/research/date-parsing-with-llms.md) + [`llm-date-solutions-deep-dive.md`](docs/research/llm-date-solutions-deep-dive.md)
+- [ ] **[22 · LLM application architecture](lessons/22_architecture/README.md)** — purely architectural meta-lesson: the 8 layers, four scaling tiers, decision matrix per concern, anti-patterns from real production systems
+- [ ] **[23 · Date computation & localized output](lessons/23_date_localization/README.md)** — OUTPUT side. The `today_iso()` tool pattern for date arithmetic + `babel` for locale-aware formatting ("23 Mayıs 2026", "23. Mai 2026", "23 مايو 2026", "1405/03/02" Jalali, "1447-12-06" Hijri, "2026年5月23日"). Runs without an API key for the localization demo
+- [ ] **[24 · Spoken-number → digit normalization](lessons/24_spoken_numbers/README.md)** — PyPI survey (`text2num` for 7 EU langs, none for Turkish, why tokenizers aren't the right tool), a rule-based Turkish parser, fuzzy partial-matching with 3-tier escalation (accept / confirm / reject), the `parse_spoken_number` `@tool` that wraps `text2num` multilingual + our parser, and the honest answer to "does wrapping it as a tool cause hallucination?"
+- [ ] **[25 · Tool design patterns](lessons/25_tool_design/README.md)** — consolidates tool wisdom from lessons 05/10/19/23/24. Five canonical shapes (read-only / computation+metadata / side-effect+HITL / router / wrapper), the rich-return-dict principle, recoverable vs unrecoverable errors, the *"return enough metadata that the agent doesn't need the whole conversation back"* rule, two real pitfalls (`Literal` framework rejects, generic wrappers lose schema), 10 anti-patterns + a tool catalogue. Five runnable demos, no API key
 
 ### Tier 6 · Capstones
 

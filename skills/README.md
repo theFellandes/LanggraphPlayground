@@ -1,11 +1,13 @@
 # Claude Code skills
 
-Five focused, opinionated Claude Code skills derived from the
+Eight focused, opinionated Claude Code skills derived from the
 patterns in this repo. Drop them into `~/.claude/skills/` (or any
 subdirectory of it) and they become available to every Claude
 Code session on your machine.
 
 ## What's inside
+
+### Coding skills (May 2026 stack)
 
 | Folder | Skill name (triggered by) | One-liner |
 |---|---|---|
@@ -15,9 +17,18 @@ Code session on your machine.
 | [`langgraph-1x-engineering/`](langgraph-1x-engineering/SKILL.md) | `langgraph-1x-engineering` | LangGraph 1.x patterns — StateGraph, checkpointers, HITL, streaming modes, subgraphs, supervisor, swarm, Store, guardrails |
 | [`langchain-1x-engineering/`](langchain-1x-engineering/SKILL.md) | `langchain-1x-engineering` | LangChain 1.x patterns — LCEL, switchable provider adapter, structured output, tools, `create_agent` + middleware, RAG with Chroma + FastEmbed |
 
-All five reflect the **May 2026 stack** (LangChain 1.3.x,
+### Research & reasoning skills
+
+| Folder | Skill name (triggered by) | One-liner |
+|---|---|---|
+| [`scientific-paper-researcher/`](scientific-paper-researcher/SKILL.md) | `scientific-paper-researcher` | Multi-database literature search (PubMed, arXiv, bioRxiv, Semantic Scholar, ClinicalTrials.gov, ChEMBL, Google Scholar) — MCP-aware. 5-stage workflow: frame → search → triage → deep-read → synthesise. Annotated bibliography / narrative synthesis / comparison table formats |
+| [`llm-expert/`](llm-expert/SKILL.md) | `llm-expert` | Broad LLM technical expertise — architectures (Transformer / MoE / state-space), training (SFT / DPO / RLHF / RLAIF / RLVR), inference (quantization / speculative decoding / KV cache), evaluation, alignment, scaling laws, 2026 frontier model landscape, decision tree for fine-tune vs RAG vs prompt vs adapter |
+| [`deep-thinking/`](deep-thinking/SKILL.md) | `deep-thinking` | Structured analytical reasoning — first-principles, Bayesian updating, premortem / postmortem, steelman, falsifiability, base-rate sanity check, Goodhart check, second-order effects, decision matrix, mental models. Pick one framework, name it, show the work |
+
+The coding skills reflect the **May 2026 stack** (LangChain 1.3.x,
 LangGraph 1.2.x, FastAPI 0.115+, Pydantic 2.x, `uv` package manager)
-and the patterns the rest of this repo demonstrates.
+and the patterns the rest of this repo demonstrates. The research /
+reasoning skills are domain-agnostic.
 
 ## Install
 
