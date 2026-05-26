@@ -36,6 +36,7 @@ explains what it teaches and what it doesn't.
 | 03 | [Transformer architecture](03_transformer_architecture/README.md) | Implement scaled dot-product attention by hand; compare against `nn.MultiheadAttention`; visualise attention maps. Encoder vs decoder vs encoder-decoder; RoPE, flash-attention, GQA, MoE — what every modern LLM is made of |
 | 04 | [Text classification (encoder-only)](04_text_classification/README.md) | Fine-tune `distilbert-base-uncased` on an intent task. Train/eval loop. Why this is the right tool when "the LLM" is overkill |
 | 05 | [Fine-tuning encoders for embedding](05_finetuning_encoders/README.md) | Contrastive fine-tune `sentence-transformers/all-MiniLM` on a small triplet dataset. How modern embedding models are actually trained |
+| 06 | [Fine-tuning LLMs (LoRA + DPO)](06_finetuning_llms/README.md) | LoRA math, `trl`'s SFTTrainer/DPOTrainer, synthetic data generation, hosted (OpenAI) vs DIY (Hugging Face). Runnable demo on SmolLM2-135M |
 
 This is a **starter pack**, not a full deep-learning course. Each
 lesson is 1-2 evenings, end-to-end, with a runnable script. For a

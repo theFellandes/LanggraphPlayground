@@ -82,6 +82,31 @@ ml = [
   "matplotlib>=3.9",
   "numpy>=1.26",
   "faiss-cpu>=1.9",              # lesson 33 — algorithm comparison
+  "peft>=0.13",                  # ml_foundations/06 — LoRA adapters
+  "trl>=0.11",                   # ml_foundations/06 — SFT/DPO trainers
+  "pillow>=10.0",                # lesson 37 — multimodal images
+]
+eval = [
+  # Lesson 35 — evaluation discipline
+  "deepeval>=1.0",
+  "ragas>=0.2",
+]
+obs = [
+  # Lesson 34 — observability + tracing
+  "langfuse>=2.50",
+  "traceloop-sdk>=0.40",
+  "arize-phoenix>=5.0",
+]
+landscape = [
+  # Lesson 36 — opt-in extras for the library-landscape demos.
+  # Pick and choose: `uv sync --extra landscape` installs them all; or
+  # `uv add instructor` for just one.
+  "instructor>=1.6",
+  "marvin>=2.3",
+  "litellm>=1.50",
+  "pydantic-ai>=0.0.13",
+  "semantic-router>=0.0.65",
+  "dspy>=2.5",
 ]
 dev = [
   "pytest>=8.0",

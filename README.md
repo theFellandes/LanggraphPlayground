@@ -149,6 +149,16 @@ Check the boxes as you go.
 - [ ] **[32 · Prompt engineering lab](lessons/32_prompt_engineering_lab/README.md)** — versioned registry, sticky-per-user A/B routing, eval-driven promotion in CI, hot reload with locks, sandboxing user-supplied templates
 - [ ] **[33 · Vector database internals](lessons/33_vector_database_internals/README.md)** — the under-the-hood companion to lesson 29. ANN algorithms (Flat, LSH, IVF, IVF-PQ, OPQ, HNSW, ScaNN, DiskANN, SPANN), per-vendor algorithmic map (FAISS, Annoy, Qdrant, Weaviate, Milvus, Pinecone, pgvector, LanceDB, Vespa, ScaNN), and a FAISS benchmark that prints latency × recall × memory across four index types on the same data
 
+### Tier 7 · Production AI engineer (the gap-closing lessons)
+
+The topics hiring conversations probe and Tier 1-6 didn't cover. Each lesson is opinionated and library-rich.
+
+- [ ] **[34 · LLM observability + tracing](lessons/34_observability_tracing/README.md)** — LangSmith deep dive, Langfuse self-hosted, OpenTelemetry GenAI conventions, Arize Phoenix, the canonical 15-field metadata set every call should emit, cost dashboards, sampling at scale
+- [ ] **[35 · Evaluation as a discipline](lessons/35_evaluation_discipline/README.md)** — promptfoo, RAGAS, deepeval, Inspect; LLM-as-judge done right (rubrics, position bias, calibration); CI gating; synthetic test data; bootstrap statistical significance
+- [ ] **[36 · The AI engineering library landscape](lessons/36_library_landscape/README.md)** — Instructor, Outlines, Marvin, Pydantic AI, DSPy, LlamaIndex, Haystack, CrewAI, AutoGen, smolagents, OpenAI Agents SDK, Mem0/Letta/Zep, Firecrawl, semantic-router, RouteLLM, LiteLLM, vLLM, Ollama. Decision tree for picking
+- [ ] **[37 · Multimodal AI](lessons/37_multimodal/README.md)** — Claude / GPT-4o / Gemini vision input, VLM-based PDF understanding (Docling + direct VLM patterns), Whisper / Deepgram STT, ElevenLabs / Cartesia TTS, multimodal RAG (CLIP vs VLM-summary indexing)
+- [ ] **[38 · Reasoning models + routing](lessons/38_reasoning_and_routing/README.md)** — o3 / o4 / Claude extended thinking / DeepSeek R1, the test-time-compute paradigm, semantic-router and RouteLLM, cheap→reasoning cascades, cost math at 1M queries/month
+
 ### Tier 7 · Capstones
 
 Two flavours per capstone — the **simple** version (Tier 1-5 concepts) is the
@@ -174,6 +184,7 @@ opt-in dep group (`uv sync --extra ml`):
 - **[03 · Transformer architecture](ml_foundations/03_transformer_architecture/README.md)** — implement self-attention by hand; encoder vs decoder vs encoder-decoder; RoPE, flash-attention, GQA, MoE
 - **[04 · Text classification](ml_foundations/04_text_classification/README.md)** — fine-tune DistilBERT; when fine-tuned encoders beat LLM prompts
 - **[05 · Fine-tuning encoders](ml_foundations/05_finetuning_encoders/README.md)** — contrastive fine-tune `all-MiniLM` for retrieval; this is where `bge-small-en-v1.5` comes from
+- **[06 · Fine-tuning LLMs (LoRA + DPO)](ml_foundations/06_finetuning_llms/README.md)** — LoRA / QLoRA math, `trl`'s SFTTrainer / DPOTrainer, synthetic data generation, OpenAI vs HF hosted-vs-DIY; runnable demo on SmolLM2-135M
 
 A future `gnn/` track will sit next to this one for the same reason.
 
@@ -217,13 +228,19 @@ uv run python -m lessons.00_setup.example      # smoke test
 > Don't have `uv`? Install it from <https://docs.astral.sh/uv/>. It's the
 > 2026 Python package manager — fast, lockfile-based, drop-in for pip.
 
-The capstones and the ml track each have their own extras:
+The capstones and the various tracks each have their own extras:
 
 ```bash
-uv sync --extra api    # for projects/rag_qa_api + rag_qa_api_pro (FastAPI, pgvector, qdrant)
-uv sync --extra ml     # for ml_foundations/ (torch, transformers, tokenizers, gensim)
-uv sync --extra dev    # for pytest
+uv sync --extra api          # FastAPI capstones, pgvector, qdrant
+uv sync --extra ml           # ml_foundations/ (torch, transformers, tokenizers, peft, trl)
+uv sync --extra eval         # lesson 35 (deepeval, ragas)
+uv sync --extra obs          # lesson 34 (langfuse, traceloop-sdk, arize-phoenix)
+uv sync --extra landscape    # lesson 36 (instructor, marvin, dspy, semantic-router, ...)
+uv sync --extra dev          # pytest
 ```
+
+Pick the extras for what you're actually using; install on demand
+with `uv add <pkg>` for individual libraries.
 
 The Tier 6 lessons (27, 31) and `_pro` capstones also assume Redis +
 Postgres + Qdrant running locally. The lesson 29 `docker-compose.yml`

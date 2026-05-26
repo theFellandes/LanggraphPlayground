@@ -624,6 +624,6 @@ Numbers will vary; the *shape* of the curves won't.
 
 ## Next →
 
-Either:
-- Head to [`ml_foundations/03_transformer_architecture`](../../ml_foundations/03_transformer_architecture/README.md) for what's inside the model that *produces* the vectors you've just learned to index — or
-- Pick a [pro capstone](../../projects/) and wire one of these vendors in.
+[Lesson 34 · LLM observability + tracing](../34_observability_tracing/README.md) — start of Tier 7 (production AI engineer).
+
+Or jump to [`ml_foundations/03_transformer_architecture`](../../ml_foundations/03_transformer_architecture/README.md) for what's inside the model that *produces* the vectors you've just learned to index.
