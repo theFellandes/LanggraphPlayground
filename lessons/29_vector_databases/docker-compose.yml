@@ -1,0 +1,39 @@
+services:
+  pgvector:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: langgraph
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+      - ./pgvector_init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d langgraph"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"     # REST + dashboard
+      - "6334:6334"     # gRPC (faster client)
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  # Bundled here because lesson 31 (distributed locks) and the pro capstones
+  # need it. Saves you running three docker-composes.
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  pgvector_data:
+  qdrant_data:
+  redis_data:

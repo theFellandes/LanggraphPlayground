@@ -1,0 +1,57 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: langgraph
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_pro:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d langgraph"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data_pro:/qdrant/storage
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_pro:/data
+
+  api:
+    build:
+      context: ../..             # build from repo root so it can COPY shared/, data/
+      dockerfile: projects/rag_qa_api_pro/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant: { condition: service_started }
+      redis:  { condition: service_started }
+    env_file:
+      - ../../.env
+    environment:
+      POSTGRES_URL: postgresql://postgres:postgres@postgres:5432/langgraph
+      QDRANT_URL:   http://qdrant:6333
+      REDIS_URL:    redis://redis:6379
+      VECTOR_BACKEND: ${VECTOR_BACKEND:-pgvector}
+      API_KEY:        ${API_KEY:-dev-key}
+      PROMPT_VERSION: ${PROMPT_VERSION:-v1}
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data_pro:
+  qdrant_data_pro:
+  redis_data_pro:

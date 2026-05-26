@@ -41,6 +41,11 @@ dependencies = [
   # --- Web search tool for capstones ---
   "tavily-python>=0.5",
 
+  # --- Tier 6 production ---
+  "jinja2>=3.1",                 # dynamic prompting — lesson 28, capstones
+  "tenacity>=9.0",               # retry/backoff — lesson 30
+  "redis>=5.2",                  # distributed locks — lesson 31, rag_qa_api_pro
+
   # --- App / config / DX ---
   "pydantic>=2.7",
   "pydantic-settings>=2.4",
@@ -51,12 +56,32 @@ dependencies = [
 
 [project.optional-dependencies]
 api = [
-  # Used by projects/rag_qa_api/
+  # Used by projects/rag_qa_api/ and projects/rag_qa_api_pro/
   "fastapi>=0.115",
   "uvicorn[standard]>=0.32",
   "sse-starlette>=2.1",
   "langgraph-checkpoint-postgres>=2.0.0",
   "psycopg[binary,pool]>=3.2",
+  # Vector-DB choices — lesson 29 + rag_qa_api_pro
+  "langchain-postgres>=0.0.12",
+  "langchain-qdrant>=0.2",
+  "qdrant-client>=1.12",
+]
+ml = [
+  # Used by ml_foundations/ and lesson 33 — kept separate so the core
+  # LangGraph install stays slim.
+  "tokenizers>=0.20",
+  "sentencepiece>=0.2",
+  "tiktoken>=0.8",
+  "gensim>=4.3",
+  "torch>=2.4",
+  "transformers>=4.45",
+  "datasets>=3.0",
+  "sentence-transformers>=3.2",
+  "scikit-learn>=1.5",
+  "matplotlib>=3.9",
+  "numpy>=1.26",
+  "faiss-cpu>=1.9",              # lesson 33 — algorithm comparison
 ]
 dev = [
   "pytest>=8.0",
@@ -69,7 +94,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["shared", "lessons", "projects"]
+packages = ["shared", "lessons", "projects", "ml_foundations"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

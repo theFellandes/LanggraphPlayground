@@ -176,6 +176,9 @@ footer a:hover{color:var(--blue)}
   <div class="build-end">
     <strong>By the end you'll have built:</strong> a multi-agent research assistant, a stateful customer-support bot with human-in-the-loop escalation, and a RAG Q&amp;A API running in Docker with Postgres-backed state.
   </div>
+  <div class="build-end" style="margin-top:14px;background:rgba(180,140,255,.08);border-color:rgba(180,140,255,.3)">
+    <strong>The curriculum has grown.</strong> Lessons 27–32 add Tier 6 (locks, Jinja dynamic prompting, vector-DB deep dive, advanced graphs, distributed locks, prompt engineering lab). Three additional <code>_pro</code> capstones combine them. A sibling track at <a href="../ml_foundations/README.md"><code>ml_foundations/</code></a> teaches what's inside the model. The HTML map below still covers lessons 00–26; see the <a href="../README.md">README</a> for the full updated curriculum.
+  </div>
 </section>
 
 <div class="container">
@@ -479,6 +482,14 @@ footer a:hover{color:var(--blue)}
       <p class="learn">Consolidates the tool wisdom from lessons 05/10/19/23/24 into one reference. Five canonical shapes (read-only / computation+metadata / side-effect+HITL / router / wrapper), the rich-return-dict principle (so the agent doesn't need the whole conversation back), recoverable vs unrecoverable errors, two real pitfalls (<code>Literal</code> framework rejects, generic wrappers lose schema), 10 anti-patterns, and a tool catalogue.</p>
       <div class="apis"><span class="api">@tool</span><span class="api">Annotated</span><span class="api">StructuredTool</span><span class="api">confidence + metadata</span></div>
       <a href="../lessons/25_tool_design/README.md">→ open lesson</a>
+    </div>
+
+    <div class="lesson-card highlight">
+      <div class="num">▸ Lesson 26 · the misc closer</div>
+      <h3>Token counting · cost · caching · evals · MCP · reranking</h3>
+      <p class="learn">Curriculum closer. Five high-severity gaps in one focused lesson: <code>tiktoken</code> for token counting, per-provider cost matrix (1M users = $2k vs $63k), LangChain <code>InMemoryCache</code> + <code>AnthropicPromptCachingMiddleware</code> (2300× speedup demo), a 40-line eval framework, Reflexion-lite self-correction, plus README treatment of <code>langchain-mcp-adapters</code> and Cohere reranking. Honest list of what we deliberately don't cover (local LLMs, multimodal, GraphRAG) with pointers.</p>
+      <div class="apis"><span class="api">tiktoken</span><span class="api">InMemoryCache</span><span class="api">AnthropicPromptCachingMiddleware</span><span class="api">eval-suite</span><span class="api">MCP</span><span class="api">CohereRerank</span></div>
+      <a href="../lessons/26_misc/README.md">→ open lesson</a>
     </div>
   </div>
 </section>

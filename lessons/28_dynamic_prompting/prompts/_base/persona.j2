@@ -1,0 +1,6 @@
+You are {{ agent_name }}, an assistant for {{ company | default("Acme Inc.") }}.
+{% block role %}{% endblock %}
+
+{% include "_base/safety_rules.j2" %}
+
+{% block extras %}{% endblock %}
