@@ -19,7 +19,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parent.parent
 
-Provider = Literal["anthropic", "openai", "google"]
+Provider = Literal["anthropic", "openai", "google", "local"]
 
 
 class Settings(BaseSettings):
@@ -36,6 +36,12 @@ class Settings(BaseSettings):
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
     google_api_key: str | None = None
+
+    # Bring-your-own VLM: any OpenAI-compatible server (vLLM / Ollama / LM Studio / TGI).
+    # Set local_api_key to any token your server accepts (often a dummy like "EMPTY").
+    local_api_key: str | None = None
+    local_vlm_base_url: str | None = None
+    local_vlm_model: str | None = None
 
     langsmith_tracing: bool = False
     langsmith_api_key: str | None = None
