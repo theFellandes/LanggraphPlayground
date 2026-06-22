@@ -145,6 +145,12 @@ Slower per page, more flexible (you can ask for specific extractions —
 - **Tables specifically** → Docling table mode, or `unstructured.io`'s table-transformer
 - **Scanned legal documents** → AWS Textract or Azure Document Intelligence (specialised; better at forms)
 
+> **See also:** [VLM-based PDF→Markdown extraction research](../../docs/research/vlm-pdf-extraction/FINDINGS.md)
+> goes deeper than this section on Gemini-as-VLM extraction wired through the
+> `shared/llm/` switchable provider layer (`get_llm("google", ...)` +
+> `with_fallbacks`), chunker-friendly Markdown for Guillotine, and multilingual
+> (Turkish / Arabic / English) fidelity.
+
 ## Part 3 · Audio — Whisper and beyond
 
 ### Speech-to-text with Whisper

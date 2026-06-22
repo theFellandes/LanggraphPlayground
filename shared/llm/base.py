@@ -33,7 +33,7 @@ import logging
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.runnables import Runnable
 
-from shared.llm import anthropic_adapter, openai_adapter
+from shared.llm import anthropic_adapter, google_adapter, openai_adapter
 from shared.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ logger = logging.getLogger(__name__)
 _ADAPTERS = {
     "anthropic": anthropic_adapter,
     "openai":    openai_adapter,
+    "google":    google_adapter,
 }
 
 

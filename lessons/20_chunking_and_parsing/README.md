@@ -105,6 +105,12 @@ common cause of small surprises.
 | **Layout-aware** (regions, tables) | scientific papers, financial reports | Docling / Unstructured / LlamaParse (then run a normal chunker on their output) |
 | **Hierarchical / "parent-doc"** | retrieval at small granularity, generation with parent context | `ParentDocumentRetriever` (lesson 07) on top of a small chunker |
 
+> **See also:** [VLM-based PDF→Markdown extraction research](../../docs/research/vlm-pdf-extraction/FINDINGS.md)
+> goes deeper than the Layout-aware row above on producing *chunker-friendly*
+> Markdown (preserved `#`/`##`/`###` headings for `MarkdownHeaderTextSplitter`,
+> tables as Markdown/HTML, figure refs as chunk metadata) and on multilingual
+> fidelity (Turkish / Arabic / English).
+
 ## Try it yourself
 
 - Add a 5th chunker: `RecursiveCharacterTextSplitter.from_language(Language.PYTHON, chunk_size=500)`. Feed it `shared/llm/base.py`. Notice it splits on `def` / `class` boundaries.

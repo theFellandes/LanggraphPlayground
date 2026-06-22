@@ -4,7 +4,7 @@ Run:
     uv run python -m lessons.01_chat_models.example
 """
 
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from shared import get_llm
@@ -57,9 +57,10 @@ def with_message_history() -> None:
     history = [
         HumanMessage("Hi, I'm new to AI agents."),
         # The model's previous reply would normally go here as an AIMessage.
+        AIMessage("Hello! I'm Langgy, how can I help?"),
     ]
     reply = chain.invoke(
-        {"history": history, "question": "Where should I start: LCEL or LangGraph?"}
+        {"history": history, "question": "Firstly, what is your name and Where should I start: LCEL or LangGraph?"}
     )
     print_message(reply)
 

@@ -19,7 +19,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parent.parent
 
-Provider = Literal["anthropic", "openai"]
+Provider = Literal["anthropic", "openai", "google"]
 
 
 class Settings(BaseSettings):
@@ -35,6 +35,7 @@ class Settings(BaseSettings):
 
     anthropic_api_key: str | None = None
     openai_api_key: str | None = None
+    google_api_key: str | None = None
 
     langsmith_tracing: bool = False
     langsmith_api_key: str | None = None

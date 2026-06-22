@@ -15,9 +15,10 @@ dependencies = [
   "langchain-community>=0.3",
   "langchain-text-splitters>=0.3",
 
-  # --- Model providers (both kept; switch via LLM_PROVIDER env var) ---
+  # --- Model providers (all kept; switch via LLM_PROVIDER env var) ---
   "langchain-anthropic>=0.3",
   "langchain-openai>=0.3",
+  "langchain-google-genai>=2.0",  # Gemini — VLM PDF→Markdown extraction (docs/research/vlm-pdf-extraction)
 
   # --- LangGraph (v1.x) + ecosystem ---
   "langgraph>=1.0",
@@ -107,6 +108,14 @@ landscape = [
   "pydantic-ai>=0.0.13",
   "semantic-router>=0.0.65",
   "dspy>=2.5",
+]
+extraction = [
+  # VLM PDF→Markdown extraction harness — docs/research/vlm-pdf-extraction/
+  # Recommended OSS extractor + born-digital baseline (the Gemini provider
+  # itself is in core deps). Install with `uv sync --extra extraction`.
+  "docling>=2.0",                # primary extractor — MIT, native Markdown
+  "langchain-docling>=0.2",      # first-party LangChain loader for Docling
+  "pymupdf4llm>=0.0.17",         # born-digital baseline (note: AGPL — baseline only)
 ]
 dev = [
   "pytest>=8.0",

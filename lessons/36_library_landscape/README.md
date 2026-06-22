@@ -357,6 +357,10 @@ structured semantics.
 
 ## Web ingestion (the RAG-input problem)
 
+> **PDF-input sibling:** for the PDF-shaped version of this problem (rendering
+> pages to a VLM to get clean Markdown), see the deeper
+> [VLM-based PDF→Markdown extraction research](../../docs/research/vlm-pdf-extraction/FINDINGS.md).
+
 ### Firecrawl — web → markdown at scale
 
 ```python
